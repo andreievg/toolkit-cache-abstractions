@@ -4,7 +4,13 @@ import * as utils from './internal/cacheUtils'
 import * as cacheHttpClient from './internal/cacheHttpClient'
 import {createTar, extractTar, listTar} from './internal/tar'
 import {DownloadOptions, UploadOptions} from './options'
-import {CacheHttpClient} from './cacheHttpClient'
+
+export interface CacheClient {
+  getCacheEntry: typeof cacheHttpClient.getCacheEntry
+  downloadCache: typeof cacheHttpClient.downloadCache
+  reserveCache: typeof cacheHttpClient.reserveCache
+  saveCache: typeof cacheHttpClient.saveCache
+}
 
 export class ValidationError extends Error {
   constructor(message: string) {
@@ -68,7 +74,7 @@ export function isFeatureAvailable(): boolean {
 export async function _restoreCache(
   paths: string[],
   primaryKey: string,
-  cacheHttpClient: CacheHttpClient,
+  cacheHttpClient: CacheClient,
   restoreKeys?: string[],
   options?: DownloadOptions
 ): Promise<string | undefined> {
@@ -139,7 +145,7 @@ export async function _restoreCache(
   return cacheEntry.cacheKey
 }
 
-export function defaultCacheHttpClient(): CacheHttpClient {
+export function defaultCacheClient(): CacheClient {
   return {
     getCacheEntry: cacheHttpClient.getCacheEntry,
     downloadCache: cacheHttpClient.downloadCache,
@@ -166,7 +172,7 @@ export async function restoreCache(
   return _restoreCache(
     paths,
     primaryKey,
-    defaultCacheHttpClient(),
+    defaultCacheClient(),
     restoreKeys,
     options
   )
@@ -183,7 +189,7 @@ export async function restoreCache(
 export async function _saveCache(
   paths: string[],
   key: string,
-  cacheHttpClient: CacheHttpClient,
+  cacheHttpClient: CacheClient,
   options?: UploadOptions
 ): Promise<number> {
   core.info('check change')
@@ -281,5 +287,5 @@ export async function saveCache(
   key: string,
   options?: UploadOptions
 ): Promise<number> {
-  return _saveCache(paths, key, defaultCacheHttpClient(), options)
+  return _saveCache(paths, key, defaultCacheClient(), options)
 }

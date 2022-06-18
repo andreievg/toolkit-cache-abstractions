@@ -1,5 +1,11 @@
+import * as cacheHttpClient from './internal/cacheHttpClient';
 import { DownloadOptions, UploadOptions } from './options';
-import { CacheHttpClient } from './cacheHttpClient';
+export interface CacheClient {
+    getCacheEntry: typeof cacheHttpClient.getCacheEntry;
+    downloadCache: typeof cacheHttpClient.downloadCache;
+    reserveCache: typeof cacheHttpClient.reserveCache;
+    saveCache: typeof cacheHttpClient.saveCache;
+}
 export declare class ValidationError extends Error {
     constructor(message: string);
 }
@@ -23,8 +29,8 @@ export declare function isFeatureAvailable(): boolean;
  *
  * @returns string returns the key for the cache hit, otherwise returns undefined
  */
-export declare function _restoreCache(paths: string[], primaryKey: string, cacheHttpClient: CacheHttpClient, restoreKeys?: string[], options?: DownloadOptions): Promise<string | undefined>;
-export declare function defaultCacheHttpClient(): CacheHttpClient;
+export declare function _restoreCache(paths: string[], primaryKey: string, cacheHttpClient: CacheClient, restoreKeys?: string[], options?: DownloadOptions): Promise<string | undefined>;
+export declare function defaultCacheClient(): CacheClient;
 /**
  * Restores cache from keys
  *
@@ -43,7 +49,7 @@ export declare function restoreCache(paths: string[], primaryKey: string, restor
  * @param options cache upload options
  * @returns number returns cacheId if the cache was saved successfully and throws an error if save fails
  */
-export declare function _saveCache(paths: string[], key: string, cacheHttpClient: CacheHttpClient, options?: UploadOptions): Promise<number>;
+export declare function _saveCache(paths: string[], key: string, cacheHttpClient: CacheClient, options?: UploadOptions): Promise<number>;
 /**
  * Saves a list of files with the specified key
  *
