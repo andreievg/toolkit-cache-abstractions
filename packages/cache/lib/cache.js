@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveCache = exports._saveCache = exports.restoreCache = exports.defaultCacheHttpClient = exports._restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
+exports.saveCache = exports._saveCache = exports.restoreCache = exports.defaultCacheClient = exports._restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
 const core = __importStar(require("@actions/core"));
 const path = __importStar(require("path"));
 const utils = __importStar(require("./internal/cacheUtils"));
@@ -132,7 +132,7 @@ function _restoreCache(paths, primaryKey, cacheHttpClient, restoreKeys, options)
     });
 }
 exports._restoreCache = _restoreCache;
-function defaultCacheHttpClient() {
+function defaultCacheClient() {
     return {
         getCacheEntry: cacheHttpClient.getCacheEntry,
         downloadCache: cacheHttpClient.downloadCache,
@@ -140,7 +140,7 @@ function defaultCacheHttpClient() {
         saveCache: cacheHttpClient.saveCache
     };
 }
-exports.defaultCacheHttpClient = defaultCacheHttpClient;
+exports.defaultCacheClient = defaultCacheClient;
 /**
  * Restores cache from keys
  *
@@ -152,7 +152,7 @@ exports.defaultCacheHttpClient = defaultCacheHttpClient;
  */
 function restoreCache(paths, primaryKey, restoreKeys, options) {
     return __awaiter(this, void 0, void 0, function* () {
-        return _restoreCache(paths, primaryKey, defaultCacheHttpClient(), restoreKeys, options);
+        return _restoreCache(paths, primaryKey, defaultCacheClient(), restoreKeys, options);
     });
 }
 exports.restoreCache = restoreCache;
@@ -233,7 +233,7 @@ exports._saveCache = _saveCache;
  */
 function saveCache(paths, key, options) {
     return __awaiter(this, void 0, void 0, function* () {
-        return _saveCache(paths, key, defaultCacheHttpClient(), options);
+        return _saveCache(paths, key, defaultCacheClient(), options);
     });
 }
 exports.saveCache = saveCache;
