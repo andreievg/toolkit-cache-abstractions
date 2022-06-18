@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveCache = exports._saveCache = exports.restoreCache = exports._restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
+exports.saveCache = exports._saveCache = exports.restoreCache = exports.defaultCacheHttpClient = exports._restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
 const core = __importStar(require("@actions/core"));
 const path = __importStar(require("path"));
 const utils = __importStar(require("./internal/cacheUtils"));
@@ -140,6 +140,7 @@ function defaultCacheHttpClient() {
         saveCache: cacheHttpClient.saveCache
     };
 }
+exports.defaultCacheHttpClient = defaultCacheHttpClient;
 /**
  * Restores cache from keys
  *

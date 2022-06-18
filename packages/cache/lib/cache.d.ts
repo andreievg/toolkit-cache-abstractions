@@ -24,6 +24,7 @@ export declare function isFeatureAvailable(): boolean;
  * @returns string returns the key for the cache hit, otherwise returns undefined
  */
 export declare function _restoreCache(paths: string[], primaryKey: string, cacheHttpClient: CacheHttpClient, restoreKeys?: string[], options?: DownloadOptions): Promise<string | undefined>;
+export declare function defaultCacheHttpClient(): CacheHttpClient;
 /**
  * Restores cache from keys
  *
