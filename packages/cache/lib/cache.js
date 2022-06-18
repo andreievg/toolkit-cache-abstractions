@@ -28,7 +28,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveCache = exports.restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
+exports.saveCache = exports._saveCache = exports.restoreCache = exports._restoreCache = exports.isFeatureAvailable = exports.ReserveCacheError = exports.ValidationError = void 0;
 const core = __importStar(require("@actions/core"));
 const path = __importStar(require("path"));
 const utils = __importStar(require("./internal/cacheUtils"));
@@ -74,15 +74,17 @@ function isFeatureAvailable() {
 }
 exports.isFeatureAvailable = isFeatureAvailable;
 /**
- * Restores cache from keys
+ * Restores cache from keys using provided httpClient
  *
  * @param paths a list of file paths to restore from the cache
  * @param primaryKey an explicit key for restoring the cache
+ * @param cacheHttpClient client to use for cache operations
  * @param restoreKeys an optional ordered list of keys to use for restoring the cache if no cache hit occurred for key
  * @param downloadOptions cache download options
+ *
  * @returns string returns the key for the cache hit, otherwise returns undefined
  */
-function restoreCache(paths, primaryKey, restoreKeys, options) {
+function _restoreCache(paths, primaryKey, cacheHttpClient, restoreKeys, options) {
     return __awaiter(this, void 0, void 0, function* () {
         checkPaths(paths);
         restoreKeys = restoreKeys || [];
@@ -129,6 +131,29 @@ function restoreCache(paths, primaryKey, restoreKeys, options) {
         return cacheEntry.cacheKey;
     });
 }
+exports._restoreCache = _restoreCache;
+function defaultCacheHttpClient() {
+    return {
+        getCacheEntry: cacheHttpClient.getCacheEntry,
+        downloadCache: cacheHttpClient.downloadCache,
+        reserveCache: cacheHttpClient.reserveCache,
+        saveCache: cacheHttpClient.saveCache
+    };
+}
+/**
+ * Restores cache from keys
+ *
+ * @param paths a list of file paths to restore from the cache
+ * @param primaryKey an explicit key for restoring the cache
+ * @param restoreKeys an optional ordered list of keys to use for restoring the cache if no cache hit occurred for key
+ * @param downloadOptions cache download options
+ * @returns string returns the key for the cache hit, otherwise returns undefined
+ */
+function restoreCache(paths, primaryKey, restoreKeys, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return _restoreCache(paths, primaryKey, defaultCacheHttpClient(), restoreKeys, options);
+    });
+}
 exports.restoreCache = restoreCache;
 /**
  * Saves a list of files with the specified key
@@ -138,7 +163,7 @@ exports.restoreCache = restoreCache;
  * @param options cache upload options
  * @returns number returns cacheId if the cache was saved successfully and throws an error if save fails
  */
-function saveCache(paths, key, options) {
+function _saveCache(paths, key, cacheHttpClient, options) {
     var _a, _b, _c, _d, _e;
     return __awaiter(this, void 0, void 0, function* () {
         core.info('check change');
@@ -194,6 +219,20 @@ function saveCache(paths, key, options) {
             }
         }
         return cacheId;
+    });
+}
+exports._saveCache = _saveCache;
+/**
+ * Saves a list of files with the specified key
+ *
+ * @param paths a list of file paths to be cached
+ * @param key an explicit key for restoring the cache
+ * @param options cache upload options
+ * @returns number returns cacheId if the cache was saved successfully and throws an error if save fails
+ */
+function saveCache(paths, key, options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return _saveCache(paths, key, defaultCacheHttpClient(), options);
     });
 }
 exports.saveCache = saveCache;
