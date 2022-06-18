@@ -148,6 +148,7 @@ export async function saveCache(
   key: string,
   options?: UploadOptions
 ): Promise<number> {
+  core.log('check change')
   checkPaths(paths)
   checkKey(key)
 
